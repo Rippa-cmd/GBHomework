@@ -26,6 +26,8 @@ public class FirstApp
 
         char ch = 123; // or char ch = '}';
         boolean i = true;
+        
+        String first = "строковая";
     }
 
     static double task3(double a, double b, double c, double d) //Вычисление и возвращение результата выражения
