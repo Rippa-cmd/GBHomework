@@ -69,7 +69,9 @@ public class FirstApp {
 
     static void task8(int year) //Проверка на високосность года
     {
-        if ((((year%4)==0)||((year%400)==0))&&((year%100)!=0))
+        if (((year%4)==0)&&((year%100)!=0))
+            System.out.println("Год високосный");
+        else if ((year%400)==0)
             System.out.println("Год високосный");
         else System.out.println("Год не високосный");
     }
