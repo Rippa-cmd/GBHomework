@@ -35,12 +35,12 @@ public class TicTacToe {
             // Перезапуск игры
 
             System.out.println("Хотите сыграть еще раз? Введите 1 что бы продолжить: ");
-            if (!SCANNER.hasNextInt()){
+            if (!SCANNER.hasNextInt()) {
                 SCANNER.nextLine();
                 return;
             }
             replay = SCANNER.nextInt();
-        }while (replay == 1);
+        } while (replay == 1);
     }
 
     // Проверка строк и столбцов на победу
@@ -146,13 +146,12 @@ public class TicTacToe {
             for (int colIndex = 0; colIndex < SIZE; colIndex++) {
                 if (compCheckCell(rowIndex, colIndex)) {
                     map[rowIndex][colIndex] = dot;
-                    if (linesChecker(dot, true)&&dot==DOT_O)
+                    if (linesChecker(dot, true) && dot == DOT_O)
                         return true;
-                    else if (linesChecker(dot, true)&&dot==DOT_X) {
+                    else if (linesChecker(dot, true) && dot == DOT_X) {
                         map[rowIndex][colIndex] = DOT_O;
                         return true;
-                    }                        
-                    else map[rowIndex][colIndex] = DOT_EMPTY;
+                    } else map[rowIndex][colIndex] = DOT_EMPTY;
                 }
             }
 
@@ -167,14 +166,14 @@ public class TicTacToe {
         int colIndex = -1;
         do {
             System.out.print("Введите номер строки: ");
-            if (!SCANNER.hasNextInt()){
+            if (!SCANNER.hasNextInt()) {
                 SCANNER.nextLine();
                 System.out.println("Введите число!");
                 continue;
             }
             rowIndex = SCANNER.nextInt() - 1;
             System.out.print("Введите номер столбца: ");
-            if (!SCANNER.hasNextInt()){
+            if (!SCANNER.hasNextInt()) {
                 SCANNER.nextLine();
                 System.out.println("Введите число!");
                 continue;
@@ -221,13 +220,13 @@ public class TicTacToe {
 
     private static void drawMap() {
         for (int rowIndex = 0; rowIndex <= SIZE; rowIndex++) {
-            System.out.print(rowIndex + " ");
+            System.out.print(rowIndex + "\t");
         }
         System.out.println();
         for (int rowIndex = 0; rowIndex < SIZE; rowIndex++) {
-            System.out.print(rowIndex + 1 + " ");
+            System.out.print(rowIndex + 1 + "\t");
             for (int colIndex = 0; colIndex < SIZE; colIndex++) {
-                System.out.print(map[rowIndex][colIndex] + " ");
+                System.out.print(map[rowIndex][colIndex] + "\t");
             }
             System.out.println();
         }
