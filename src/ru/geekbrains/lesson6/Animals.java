@@ -7,10 +7,8 @@ public abstract class Animals {
     protected double jumpValue;
     protected int swimValue;
     private static int animalsAmount = 0;
-    private static int catsAmount = 0;
-    private static int dogsAmount = 0;
 
-    public Animals(String name, int runValue, double jumpValue, int swimValue) {
+    protected Animals(String name, int runValue, double jumpValue, int swimValue) {
         this.name = name;
         this.runValue = (int) randomStrength(runValue);
         this.jumpValue = randomStrength(jumpValue);
@@ -36,14 +34,6 @@ public abstract class Animals {
         else System.out.println(this.name + " проплыл только " + this.swimValue + " метров из " + distance);
     }
 
-    protected void incrementCatsQuantity() {
-        catsAmount++;
-    }
-
-    protected void incrementDogsQuantity() {
-        dogsAmount++;
-    }
-
     // Метод случайного разброса характеристик животных
 
     private double randomStrength(double defaultStrength) {
@@ -61,7 +51,7 @@ public abstract class Animals {
     }
 
     public static void getQuantityInfo() {
-        System.out.println("\nВсего животных - " + animalsAmount + ", из них: Котов - " + catsAmount + " Собак - " + dogsAmount);
+        System.out.println("\nВсего животных - " + animalsAmount + ", из них: Котов - " + Cat.getCatsAmount() + " Собак - " + Dog.getDogsAmount());
     }
 
 }
