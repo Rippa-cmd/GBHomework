@@ -1,9 +1,12 @@
 package ru.geekbrains.lesson6;
 
 public class Cat extends Animals {
+
+    private static int catsAmount = 0;
+
     public Cat(String name) {
         super(name, 200, 2, 0);
-        super.incrementCatsQuantity();
+        catsAmount++;
         System.out.println(super.toString());
     }
 
@@ -12,4 +15,7 @@ public class Cat extends Animals {
         System.out.println("Хватит мучать кота, он не умеет плавать!");
     }
 
+    public static int getCatsAmount() {
+        return catsAmount;
+    }
 }
