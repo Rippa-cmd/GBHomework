@@ -14,3 +14,5 @@ public class Dog extends Animals {
         return dogsAmount;
     }
 }
+
+
