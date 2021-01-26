@@ -1,12 +1,12 @@
 package ru.geekbrains.lesson9.model;
 
-import ru.geekbrains.lesson9.interfaces.RunAndJump;
+import ru.geekbrains.lesson9.interfaces.ParticipantInterface;
 
 
 /**
  * Класс котов, хороши в прыжках, по плохи в беге на дальние дистанции
  */
-public class Cat implements RunAndJump {
+public class Cat implements ParticipantInterface {
     private String name;
     private double maxJumpHeight;
     private int maxRunDistance;
@@ -14,7 +14,7 @@ public class Cat implements RunAndJump {
 
 
     public Cat(String name, double maxJumpHeight, int maxRunDistance) {
-        this.name = name;
+        this.name = name + " (Cat)";
         this.maxJumpHeight = maxJumpHeight;
         this.maxRunDistance = maxRunDistance;
     }
