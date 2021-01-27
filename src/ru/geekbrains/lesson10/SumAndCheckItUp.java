@@ -51,9 +51,7 @@ public class SumAndCheckItUp {
                 array = createTrueArray(array);
             } catch (MyArrayDataException e) {
 
-                // Если преобразование не удалось, запоминаем из исключения номер ячеки, пишем туда 0, и продолжаем
-                startRowIndex = MyArrayDataException.getLastRowIndexException();
-                startColIndex = MyArrayDataException.getLastColIndexException();
+                // Если преобразование не удалось, пишем туда 0, и продолжаем
                 array[startRowIndex][startColIndex] = "0";
             }
         }
@@ -80,7 +78,9 @@ public class SumAndCheckItUp {
                     sum += Integer.parseInt(array[rowIndex][colIndex]);
                 } catch (NumberFormatException e) {
 
-                    // Если не удается, выбрасываем ошибку с данными ячейки
+                    // Если не удается, запоминаем индексы ячейки и выбрасываем ошибку с данными ячейки
+                    startRowIndex = rowIndex;
+                    startColIndex = colIndex;
                     throw new MyArrayDataException(rowIndex, colIndex);
                 }
             }
