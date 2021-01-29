@@ -8,8 +8,8 @@ import java.util.*;
  */
 public class CollectionsWorkplace {
     public static void main(String[] args) {
-        String[] words = {"apple", "orange", "garlic", "lemon", "banana", "apricot", "avocado", "broccoli", "carrot", "avocado", "cherry",
-                "garlic", "banana", "broccoli", "avocado", "apple", "cherry", "garlic"};
+        String[] words = {"apple", "orange", "garlic", "lemon", "banana", "apricot", "avocado", "broccoli", "carrot",
+                "avocado", "cherry", "garlic", "banana", "broccoli", "avocado", "apple", "cherry", "garlic"};
 
         countRepeats(words);
 
