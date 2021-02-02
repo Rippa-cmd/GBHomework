@@ -1,8 +1,8 @@
-package ru.geekbrains.module2.lesson10;
+package ru.geekbrains.module2.lesson2;
 
 
-import ru.geekbrains.module2.lesson10.MyExeptions.MyArrayDataException;
-import ru.geekbrains.module2.lesson10.MyExeptions.MyArraySizeException;
+import ru.geekbrains.module2.lesson2.MyExeptions.MyArrayDataException;
+import ru.geekbrains.module2.lesson2.MyExeptions.MyArraySizeException;
 
 /**
  * Класс проверяет размерность строкового массива, и суммирует все его элементы

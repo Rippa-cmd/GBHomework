@@ -1,4 +1,4 @@
-package ru.geekbrains.module2.lesson9.interfaces;
+package ru.geekbrains.module2.lesson1.interfaces;
 
 /**
  * Вроде бы проходили интерфейсы, решил добавить, хотя роли не сыграло

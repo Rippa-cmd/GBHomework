@@ -1,4 +1,4 @@
-package ru.geekbrains.module2.lesson10.MyExeptions;
+package ru.geekbrains.module2.lesson2.MyExeptions;
 
 /**
  * Исключение, если в переменной типа String не число (или невозможно распарсить в тип Integer)

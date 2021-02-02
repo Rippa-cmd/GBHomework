@@ -1,7 +1,7 @@
-package ru.geekbrains.module2.lesson9.service;
+package ru.geekbrains.module2.lesson1.service;
 
-import ru.geekbrains.module2.lesson9.interfaces.ParticipantInterface;
-import ru.geekbrains.module2.lesson9.model.*;
+import ru.geekbrains.module2.lesson1.interfaces.ParticipantInterface;
+import ru.geekbrains.module2.lesson1.model.*;
 
 /**
  * Основной класс логики спортивных состязаний, с заданным количеством участников и препятствий

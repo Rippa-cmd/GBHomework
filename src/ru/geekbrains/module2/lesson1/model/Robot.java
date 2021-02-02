@@ -1,6 +1,6 @@
-package ru.geekbrains.module2.lesson9.model;
+package ru.geekbrains.module2.lesson1.model;
 
-import ru.geekbrains.module2.lesson9.interfaces.ParticipantInterface;
+import ru.geekbrains.module2.lesson1.interfaces.ParticipantInterface;
 
 /**
  * Класс роботов, хороши и в беге и в прыжках, на то они и роботы

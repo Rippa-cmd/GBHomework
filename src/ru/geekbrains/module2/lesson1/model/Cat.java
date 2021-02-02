@@ -1,33 +1,35 @@
-package ru.geekbrains.module2.lesson9.model;
+package ru.geekbrains.module2.lesson1.model;
 
-import ru.geekbrains.module2.lesson9.interfaces.ParticipantInterface;
+import ru.geekbrains.module2.lesson1.interfaces.ParticipantInterface;
 
 
 /**
- * Класс людей, плохи в прыжках, но хороши в беге на дальние дистанции
+ * Класс котов, хороши в прыжках, по плохи в беге на дальние дистанции
  */
-public class Human implements ParticipantInterface {
+public class Cat implements ParticipantInterface {
     private String name;
     private double maxJumpHeight;
     private int maxRunDistance;
     private boolean canParticipate = true;
 
-    public Human(String name, double maxJumpHeight, int maxRunDistance) {
-        this.name = name + " (Human)";
+
+    public Cat(String name, double maxJumpHeight, int maxRunDistance) {
+        this.name = name + " (Cat)";
         this.maxJumpHeight = maxJumpHeight;
         this.maxRunDistance = maxRunDistance;
     }
 
-    public Human(double maxJumpHeight, int maxRunDistance) {
-        this("Abstract human", maxJumpHeight, maxRunDistance);
+    public Cat(double maxJumpHeight, int maxRunDistance) {
+        this("Abstract cat", maxJumpHeight, maxRunDistance);
     }
 
-    public Human(String name) {
-        this(name, 1, 1000);
+    public Cat(String name) {
+        this(name, 2, 600);
+
     }
 
-    public Human() {
-        this("Abstract human", 1, 1000);
+    public Cat() {
+        this("Abstract Cat", 2, 600);
     }
 
 
@@ -42,6 +44,7 @@ public class Human implements ParticipantInterface {
             canParticipate = false;
         }
     }
+
 
     // Метод прыжка
     @Override

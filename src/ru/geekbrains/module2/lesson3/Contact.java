@@ -1,4 +1,4 @@
-package ru.geekbrains.module2.lesson11;
+package ru.geekbrains.module2.lesson3;
 
 /**
  * Класс контакта, хранит фамилию и телефонный номер

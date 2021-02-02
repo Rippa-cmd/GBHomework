@@ -1,4 +1,4 @@
-package ru.geekbrains.module2.lesson9.model;
+package ru.geekbrains.module2.lesson1.model;
 
 
 /**
