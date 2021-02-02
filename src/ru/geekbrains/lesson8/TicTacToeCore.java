@@ -15,6 +15,8 @@ public class TicTacToeCore {
     public static final int DOTS_TO_WIN = 3;
 
     public static JButton[][] buttons = new JButton[SIZE][SIZE];
+    public static MyWindow game;
+    public static TicTacToeAI ticTacToeAI;
 
     static class MyWindow extends JFrame {
 
@@ -49,7 +51,6 @@ public class TicTacToeCore {
                     addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            String action = getActionCommand();
                             setActionCommand(DRAW_X);
                             TicTacToeAI.core(rowIndex, colIndex);
                         }
@@ -59,43 +60,40 @@ public class TicTacToeCore {
                 @Override
                 public void paint(Graphics graphics) {
                     super.paint(graphics);
-
-                    if (getActionCommand().equals(DRAW_EMPTY)) {
-                        repaint();
-                    } else if (getActionCommand().equals(DRAW_X)) {
-                        Graphics2D g2d = (Graphics2D) graphics;
-                        g2d.setStroke(new BasicStroke(10));
-                        g2d.setColor(Color.BLUE);
-                        g2d.drawLine(0, 0, this.getWidth(), this.getHeight());
-                        g2d.drawLine(this.getWidth(), 0, 0, this.getHeight());
-                        setEnabled(false);
-
-                    } else if (getActionCommand().equals(DRAW_O)) {
-                        graphics.setColor(Color.RED);
-                        graphics.fillOval(0, 0, getWidth(), getHeight());
-                        setEnabled(false);
+                    switch (getActionCommand()) {
+                        case DRAW_EMPTY:
+                            repaint();
+                            break;
+                        case DRAW_X:
+                            Graphics2D g2d = (Graphics2D) graphics;
+                            g2d.setStroke(new BasicStroke(10));
+                            g2d.setColor(Color.BLUE);
+                            g2d.drawLine(0, 0, this.getWidth(), this.getHeight());
+                            g2d.drawLine(this.getWidth(), 0, 0, this.getHeight());
+                            setEnabled(false);
+                            break;
+                        case DRAW_O:
+                            graphics.setColor(Color.RED);
+                            graphics.fillOval(0, 0, getWidth(), getHeight());
+                            setEnabled(false);
+                            break;
                     }
                 }
             };
         }
-        // TODO Реализовать закрытие окон
-//        public void closeWindow() {
-//            this.setVisible(false);
-//            dispose();
-//        }
-
     }
 
 
     public static void main(String[] args) {
-        MyWindow game = new MyWindow();
-        TicTacToeAI ticTacToeAI = new TicTacToeAI();
+        game = new MyWindow();
+        ticTacToeAI = new TicTacToeAI();
     }
 
     // Перезапуск игры
     public static void newGame() {
-        new MyWindow();
-        new TicTacToeAI();
+        game.dispose();
+        game = new MyWindow();
+        ticTacToeAI = new TicTacToeAI();
     }
 
 }
