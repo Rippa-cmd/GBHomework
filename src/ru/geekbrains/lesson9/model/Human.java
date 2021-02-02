@@ -1,19 +1,19 @@
 package ru.geekbrains.lesson9.model;
 
-import ru.geekbrains.lesson9.interfaces.RunAndJump;
+import ru.geekbrains.lesson9.interfaces.ParticipantInterface;
 
 
 /**
  * Класс людей, плохи в прыжках, но хороши в беге на дальние дистанции
  */
-public class Human implements RunAndJump {
+public class Human implements ParticipantInterface {
     private String name;
     private double maxJumpHeight;
     private int maxRunDistance;
     private boolean canParticipate = true;
 
     public Human(String name, double maxJumpHeight, int maxRunDistance) {
-        this.name = name;
+        this.name = name + " (Human)";
         this.maxJumpHeight = maxJumpHeight;
         this.maxRunDistance = maxRunDistance;
     }

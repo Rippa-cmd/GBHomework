@@ -1,25 +1,25 @@
 package ru.geekbrains.lesson9.model;
 
-import ru.geekbrains.lesson9.interfaces.RunAndJump;
+import ru.geekbrains.lesson9.interfaces.ParticipantInterface;
 
 /**
  * Класс роботов, хороши и в беге и в прыжках, на то они и роботы
  */
 
-public class Robot implements RunAndJump {
+public class Robot implements ParticipantInterface {
     private String name;
     private double maxJumpHeight;
     private int maxRunDistance;
     private boolean canParticipate = true;
 
     public Robot(String name, double maxJumpHeight, int maxRunDistance) {
-        this.name = "Model " + name;
+        this.name = name + " (Robot)";
         this.maxJumpHeight = maxJumpHeight;
         this.maxRunDistance = maxRunDistance;
     }
 
     public Robot(double maxJumpHeight, int maxRunDistance) {
-        this("Unknown", maxJumpHeight, maxRunDistance);
+        this("Unknown Model", maxJumpHeight, maxRunDistance);
     }
 
     public Robot(String name) {
@@ -27,7 +27,7 @@ public class Robot implements RunAndJump {
     }
 
     public Robot() {
-        this("Unknown", 4, 3000);
+        this("Unknown Model", 4, 3000);
     }
 
 
