@@ -1,4 +1,4 @@
-# Default ignored files
-/workspace.xml
-/modules.xml
-/misc.xml
+# IntellijIdea files
+*.iml
+.idea
+out
