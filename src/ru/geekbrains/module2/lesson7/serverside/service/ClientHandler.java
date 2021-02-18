@@ -142,7 +142,7 @@ public class ClientHandler {
             return;
         }
         if (server.isNickBusy(str[1]))
-            server.privateMessage(str[1], str[2]);
+            server.privateMessage(this, str[1], str[2]);
         else
             sendMessage("Invalid nickname");
     }
