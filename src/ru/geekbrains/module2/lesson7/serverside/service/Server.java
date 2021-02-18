@@ -60,10 +60,11 @@ public class Server {
     }
 
     // Реализация отправки личного сообщения конкретному пользователю
-    public synchronized void privateMessage(String nickname, String message) {
+    public synchronized void privateMessage(ClientHandler sender, String nickname, String message) {
         for (ClientHandler client : clients) {
             if (client.getNickname().equals(nickname)) {
-                client.sendMessage(client.getNickname() + " whisper to you: " + message);
+                client.sendMessage(sender.getNickname() + " whisper to you: " + message);
+                sender.sendMessage("You whisper to " + nickname + ": " + message);
                 return;
             }
         }
