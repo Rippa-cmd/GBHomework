@@ -15,6 +15,11 @@ public class ClientHandler {
     private DataInputStream dis;
     private DataOutputStream dos;
 
+    private long timeout = System.currentTimeMillis();
+    private int maxTimeout = 120000;
+
+    private boolean isAlreadyClosedConnection = false;
+
     private String nickname;
 
     public String getNickname() {
@@ -40,6 +45,21 @@ public class ClientHandler {
                 }
             }).start();
 
+            // Поток отключения клиента по таймеру
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        Thread.sleep(maxTimeout - (System.currentTimeMillis() - timeout));
+                        if (System.currentTimeMillis() - timeout > maxTimeout) {
+                            sendMessage("You were kicked out for timeout");
+                            closeConnection();
+                            break;
+                        }
+                    } catch (InterruptedException ignored) {
+                    }
+                }
+            }).start();
+
         } catch (IOException ignored) {
             closeConnection();
             throw new RuntimeException("Problems with ClientHandler");
@@ -53,40 +73,44 @@ public class ClientHandler {
         int timer = 0;
         while (true) {
             String str = dis.readUTF();
-            if (str.startsWith("/help")) {
-                sendMessage("\tFor log in write you login and password in format\n\t/auth login password");
-                sendMessage("\tFor sign up write you login, password and nickname in format\n\t/signup login password nickname");
-            } else if (str.startsWith("/auth ")) {
-                String[] logpass = str.split(" ");
-                if (logpass.length > 2) {
-                    String name = server.
-                            getAuthService().
-                            getNicknameByLoginAndPassword(logpass[1], logpass[2]);
-                    if (name != null) {
-                        if (!server.isNickBusy(name)) {
-                            sendMessage("\tYou are in! Your nickname is: " + name);
-                            nickname = name;
-                            server.subscribe(this);
-                            server.broadcastMessage("\tHello, " + nickname);
-                            return;
+            timeout = System.currentTimeMillis();  // Обнуляем таймер таймаута
+            if (str.startsWith("/")) {
+                if (str.startsWith("/help")) {
+                    sendMessage("\tFor log in write you login and password in format\n\t/auth login password");
+                    sendMessage("\tFor sign up write you login, password and nickname in format\n\t/signup login password nickname");
+                } else if (str.startsWith("/auth ")) {
+                    String[] logpass = str.split(" ");
+                    if (logpass.length > 2) {
+                        String name = server.
+                                getAuthService().
+                                getNicknameByLoginAndPassword(logpass[1], logpass[2]);
+                        if (name != null) {
+                            if (!server.isNickBusy(name)) {
+                                sendMessage("\tYou are in! Your nickname is: " + name);
+                                nickname = name;
+                                server.subscribe(this);
+                                server.broadcastMessage("\tHello, " + nickname);
+                                return;
+                            }
+                            sendMessage("\tThis user is already in");
+                            continue;
                         }
-                        sendMessage("\tThis user is already in");
-                        continue;
                     }
+                    timer++;
+                    sendMessage(str);
+                    sendMessage("\tWrong login or password\n\tYou still have " + (3 - timer) + " attempts");
+                    if (timer >= 3) {
+                        sendMessage("\tToo many wrong tries, you are banned for 1 minute");
+                        sendMessage("/banned");
+                        Thread.sleep(60000);
+                        sendMessage("\tYou are unbanned");
+                        sendMessage("/unbanned");
+                        timer = 0;
+                        timeout = System.currentTimeMillis();
+                    }
+                } else if (str.startsWith("/signup ")) {
+                    if (signUp(str)) return;
                 }
-                timer++;
-                sendMessage(str);
-                sendMessage("\tWrong login or password\n\tYou still have " + (3 - timer) + " attempts");
-                if (timer >= 3) {
-                    sendMessage("\tToo many wrong tries, you are banned for 1 minute");
-                    sendMessage("/banned");
-                    Thread.sleep(60000);
-                    sendMessage("\tYou are unbanned");
-                    sendMessage("/unbanned");
-                    timer = 0;
-                }
-            } else if (str.startsWith("/signup ")) {
-                if (signUp(str)) return;
             } else sendMessage("\tWrong command, write /help for more info");
         }
     }
@@ -112,13 +136,18 @@ public class ClientHandler {
 
     // Обработка полученного от клиента сообщения
     private void readMessage() throws IOException {
+        maxTimeout *= 1.5;  // Переводим таймер на 3 минуты
         while (true) {
             String message = dis.readUTF();
+            timeout = System.currentTimeMillis(); // Обнуляем таймер таймаута
             System.out.println(nickname + ": " + message);
-            if (message.equals("/exit"))
-                return;
-            if (message.startsWith("/w")) {
-                preparePrivateMessage(message);
+            if (message.startsWith("/")) {
+                if (message.equals("/exit"))
+                    return;
+                if (message.startsWith("/w"))
+                    preparePrivateMessage(message);
+                if (message.trim().equals("/list"))
+                    server.list(this);
                 continue;
             }
             if (!message.trim().isEmpty()) {
@@ -157,23 +186,26 @@ public class ClientHandler {
 
     //Закрытие потоков
     private void closeConnection() {
-        server.broadcastMessage("\t" + nickname + " exit from chat");
-        System.out.println(nickname + " exit from chat");
-        server.unsubscribe(this);
-        try {
-            dis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            dos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!isAlreadyClosedConnection) {
+            server.broadcastMessage("\t" + nickname + " exit from chat");
+            System.out.println(nickname + " exit from chat");
+            server.unsubscribe(this);
+            try {
+                dis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                dos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            isAlreadyClosedConnection = true;
         }
     }
 }

@@ -69,6 +69,19 @@ public class Server {
             }
         }
     }
+
+    // Выводит список пользователей в сети
+    public synchronized void list(ClientHandler from) {
+        StringBuilder list = new StringBuilder("");
+        for (ClientHandler client : clients) {
+            if (!client.getNickname().equals(from.getNickname()))
+                list.append(client.getNickname()).append(", ");
+        }
+        int length = list.length();
+        list.deleteCharAt(length - 1).deleteCharAt(length - 2);
+        from.sendMessage("List of online users: " + list.toString());
+    }
+
     // Подписка пользователя
     public synchronized void subscribe(ClientHandler client) {
         clients.add(client);
