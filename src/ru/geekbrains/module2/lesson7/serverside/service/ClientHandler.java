@@ -56,6 +56,7 @@ public class ClientHandler {
                             break;
                         }
                     } catch (InterruptedException ignored) {
+                        closeConnection();
                     }
                 }
             }).start();
@@ -110,7 +111,7 @@ public class ClientHandler {
                     }
                 } else if (str.startsWith("/signup ")) {
                     if (signUp(str)) return;
-                }
+                } else sendMessage("\tWrong command, write /help for more info");
             } else sendMessage("\tWrong command, write /help for more info");
         }
     }
@@ -120,11 +121,13 @@ public class ClientHandler {
         String[] logPassNick = message.split(" ");
         if (logPassNick.length == 4) {
             if (!server.getAuthService().isNicknameBusy(logPassNick[3])) {
-                server.getAuthService().addEntryList(logPassNick);
-                nickname = logPassNick[3];
-                server.subscribe(this);
-                server.broadcastMessage("\tHello, " + nickname);
-                return true;
+                if (!server.getAuthService().isLoginBusy(logPassNick[1])) {
+                    server.getAuthService().addEntry(logPassNick);
+                    nickname = logPassNick[3];
+                    server.subscribe(this);
+                    server.broadcastMessage("\tHello, " + nickname);
+                    return true;
+                } else sendMessage("\tLogin " + logPassNick[1] + " is busy");
             } else
                 sendMessage("\tNickname " + logPassNick[3] + " is busy");
         } else {
@@ -148,6 +151,8 @@ public class ClientHandler {
                     preparePrivateMessage(message);
                 if (message.trim().equals("/list"))
                     server.list(this);
+                if (message.startsWith("/changeNick"))
+                    changeNick(message);
                 continue;
             }
             if (!message.trim().isEmpty()) {
@@ -156,7 +161,27 @@ public class ClientHandler {
         }
     }
 
-    //Побготовка личного сообщения
+    //Позволяет пользователю сменить ник
+    private void changeNick(String message) {
+        String[] newNick = message.split(" ");
+        if (newNick.length > 2) {
+            sendMessage("Nick can't contains spaces");
+            return;
+        }
+        if (newNick.length < 2) {
+            sendMessage("Nick can't be empty");
+            return;
+        }
+        if (!server.getAuthService().isNicknameBusy(newNick[1])) {
+            server.getAuthService().nickChanger(nickname, newNick[1]);
+            server.unsubscribe(this);
+            nickname = newNick[1];
+            server.subscribe(this);
+            sendMessage("Nick changed successful");
+        } else sendMessage("Nick is already busy");
+    }
+
+    //Подготовка личного сообщения
     private void preparePrivateMessage(String message) {
         String[] str = message.split(" ", 3);
         if (!str[0].equals("/w")) {
