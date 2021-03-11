@@ -89,8 +89,9 @@ public class ClientHandler {
                             if (!server.isNickBusy(name)) {
                                 sendMessage("\tYou are in! Your nickname is: " + name);
                                 nickname = name;
-                                server.subscribe(this);
                                 server.broadcastMessage("\tHello, " + nickname);
+                                server.subscribe(this);
+                                sendMessage("/login " + logpass[1]);
                                 return;
                             }
                             sendMessage("\tThis user is already in");
@@ -165,40 +166,40 @@ public class ClientHandler {
     private void changeNick(String message) {
         String[] newNick = message.split(" ");
         if (newNick.length > 2) {
-            sendMessage("Nick can't contains spaces");
+            sendMessage("\tNick can't contains spaces");
             return;
         }
         if (newNick.length < 2) {
-            sendMessage("Nick can't be empty");
+            sendMessage("\tNick can't be empty");
             return;
         }
         if (!server.getAuthService().isNicknameBusy(newNick[1])) {
             server.getAuthService().nickChanger(nickname, newNick[1]);
+            sendMessage("\t" + nickname + " changed his nickname to " + newNick[1]);
             server.unsubscribe(this);
             nickname = newNick[1];
             server.subscribe(this);
-            sendMessage("Nick changed successful");
-        } else sendMessage("Nick is already busy");
+        } else sendMessage("\tNick is already busy");
     }
 
     //Подготовка личного сообщения
     private void preparePrivateMessage(String message) {
         String[] str = message.split(" ", 3);
         if (!str[0].equals("/w")) {
-            sendMessage("Invalid command");
+            sendMessage("\tInvalid command");
             return;
         }
         if (str.length < 3) {
             if (str.length == 1) {
-                sendMessage("Empty nickname");
+                sendMessage("\tEmpty nickname");
             } else
-                sendMessage("Empty message");
+                sendMessage("\tEmpty message");
             return;
         }
         if (server.isNickBusy(str[1]))
             server.privateMessage(this, str[1], str[2]);
         else
-            sendMessage("Invalid nickname");
+            sendMessage("\tInvalid nickname");
     }
 
     //Отправка сообщения клиенту
