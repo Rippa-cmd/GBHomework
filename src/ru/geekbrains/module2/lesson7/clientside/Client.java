@@ -5,10 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 /**
@@ -18,6 +15,7 @@ public class Client extends JFrame {
 
     private final String SERVER_ADDR = "localhost";
     private final int SERVER_PORT = 8081;
+    private final int LOG_MESSAGE_SIZE = 100;
 
     private JTextField msgInputField;
     private JTextArea chatArea;
@@ -26,7 +24,14 @@ public class Client extends JFrame {
     private DataInputStream in;
     private DataOutputStream out;
 
+    private File file;
+    private BufferedWriter writer;
+    private BufferedReader reader;
+
     private boolean isBanned = false;
+    private boolean isAuthorized = false;
+
+    private String login = "";
 
     public Client() {
         try {
@@ -45,12 +50,24 @@ public class Client extends JFrame {
             try {
                 while (true) {
                     String strFromServer = in.readUTF();
-                    if (strFromServer.equals("/banned")) {
-                        isBanned = true;
-                        continue;
-                    } else if (strFromServer.equals("/unbanned")) {
-                        isBanned = false;
-                        continue;
+                    if (!isAuthorized) {
+                        if (strFromServer.equals("/banned")) {
+                            isBanned = true;
+                            continue;
+                        } else if (strFromServer.equals("/unbanned")) {
+                            isBanned = false;
+                            continue;
+                        }
+
+                        // Если сервер дал добро на вход, запускаем логирование
+                        if (strFromServer.startsWith("/login")) {
+                            isAuthorized = true;
+                            login = strFromServer.substring(7);
+                            startLogger();
+                            continue;
+                        }
+                    } else {
+                        messageLogger(strFromServer);
                     }
                     chatArea.append(strFromServer + "\n");
                 }
@@ -62,6 +79,40 @@ public class Client extends JFrame {
         }).start();
     }
 
+    // Запускает ридеры и райтеры, если есть что в логах, выводит последние 100 сообщений
+    public void startLogger() throws IOException {
+        file = new File(login + "_log.txt");
+        writer = new BufferedWriter(new FileWriter(file, true));
+        reader = new BufferedReader(new FileReader(file));
+        LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
+
+        while (lineNumberReader.readLine() != null) {
+        }
+        int count = lineNumberReader.getLineNumber() - 1;
+        if (count > LOG_MESSAGE_SIZE) {
+            count -= LOG_MESSAGE_SIZE;
+            for (; count > 0; count--) {
+                reader.readLine();
+            }
+        }
+        String logMsg;
+        chatArea.append("\t========== Log history of last " + LOG_MESSAGE_SIZE + " messages ==========\n");
+        while ((logMsg = reader.readLine()) != null) {
+            if (!logMsg.startsWith("\t"))         // Пропуск системных сообщений
+                chatArea.append(logMsg + "\n");
+        }
+        chatArea.append("\t========== End of log history ==========\n");
+        reader.close();
+        lineNumberReader.close();
+    }
+
+    // Записывает в логи сообщения, игнорируя системные
+    public void messageLogger(String message) throws IOException {
+        if (!message.startsWith("\t")) {
+            writer.write(message + "\n");
+            writer.flush();
+        }
+    }
 
     // Метод отправки сообщения
     public void sendMessage() {
@@ -81,7 +132,7 @@ public class Client extends JFrame {
                 }
             }
         } else {
-            chatArea.append("\tYou are banned\n");
+            JOptionPane.showMessageDialog(null, "You are banned!");
         }
     }
 
@@ -99,6 +150,11 @@ public class Client extends JFrame {
         }
         try {
             socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
