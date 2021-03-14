@@ -139,22 +139,26 @@ public class Client extends JFrame {
     // Закрываем сокет и потоки
     public void closeConnection() {
         try {
-            in.close();
+            if (in != null)
+                in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            out.close();
+            if (out != null)
+                out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            socket.close();
+            if (socket != null)
+                socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            writer.close();
+            if (writer != null)
+                writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
