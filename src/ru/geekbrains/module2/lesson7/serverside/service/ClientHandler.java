@@ -40,7 +40,8 @@ public class ClientHandler {
                 try {
                     authentication();
                     readMessage();
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    Server.logger.error(e);
                 } finally {
                     closeConnection();
                 }
@@ -53,15 +54,18 @@ public class ClientHandler {
                         Thread.sleep(maxTimeout - (System.currentTimeMillis() - timeout));
                         if (System.currentTimeMillis() - timeout > maxTimeout) {
                             sendMessage("You were kicked out for timeout");
+                            Server.logger.info(nickname + " was kicked out for timeout");
                             closeConnection();
                             break;
                         }
-                    } catch (InterruptedException ignored) {
+                    } catch (InterruptedException e) {
+                        Server.logger.error(e);
                         closeConnection();
                     }
                 }
             });
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            Server.logger.error(e);
             closeConnection();
             throw new RuntimeException("Problems with ClientHandler");
         }
@@ -75,6 +79,7 @@ public class ClientHandler {
         while (true) {
             String str = dis.readUTF();
             timeout = System.currentTimeMillis();  // Обнуляем таймер таймаута
+            Server.logger.info("Unallocated user: " + str);
             if (str.startsWith("/")) {
                 if (str.startsWith("/help")) {
                     sendMessage("\tFor log in write you login and password in format\n\t/auth login password");
@@ -87,8 +92,9 @@ public class ClientHandler {
                                 getNicknameByLoginAndPassword(logpass[1], logpass[2]);
                         if (name != null) {
                             if (!server.isNickBusy(name)) {
-                                sendMessage("\tYou are in! Your nickname is: " + name);
                                 nickname = name;
+                                Server.logger.info("This client log in by nickname: " + nickname);
+                                sendMessage("\tYou are in! Your nickname is: " + nickname);
                                 server.broadcastMessage("\tHello, " + nickname);
                                 server.subscribe(this);
                                 sendMessage("/login " + logpass[1]);
@@ -104,9 +110,11 @@ public class ClientHandler {
                     if (timer >= 3) {
                         sendMessage("\tToo many wrong tries, you are banned for 1 minute");
                         sendMessage("/banned");
+                        Server.logger.info(nickname + " banned for 1 minute for too many bad tries to log in");
                         Thread.sleep(60000);
                         sendMessage("\tYou are unbanned");
                         sendMessage("/unbanned");
+                        Server.logger.info(nickname + " unbanned");
                         timer = 0;
                         timeout = System.currentTimeMillis();
                     }
@@ -144,7 +152,7 @@ public class ClientHandler {
         while (true) {
             String message = dis.readUTF();
             timeout = System.currentTimeMillis(); // Обнуляем таймер таймаута
-            System.out.println(nickname + ": " + message);
+            Server.logger.info(nickname + ": " + message);
             if (message.startsWith("/")) {
                 if (message.equals("/exit"))
                     return;
@@ -206,7 +214,8 @@ public class ClientHandler {
     public void sendMessage(String message) {
         try {
             dos.writeUTF(message);
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            Server.logger.error(e);
         }
     }
 
@@ -214,22 +223,22 @@ public class ClientHandler {
     private void closeConnection() {
         if (!isAlreadyClosedConnection) {
             server.broadcastMessage("\t" + nickname + " exit from chat");
-            System.out.println(nickname + " exit from chat");
+            Server.logger.info(nickname + " exit from chat");
             server.unsubscribe(this);
             try {
                 dis.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Server.logger.error(e);
             }
             try {
                 dos.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Server.logger.error(e);
             }
             try {
                 socket.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Server.logger.error(e);
             }
             isAlreadyClosedConnection = true;
         }
