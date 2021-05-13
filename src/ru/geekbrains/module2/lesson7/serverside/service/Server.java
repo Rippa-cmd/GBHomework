@@ -1,5 +1,8 @@
 package ru.geekbrains.module2.lesson7.serverside.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.geekbrains.module2.lesson7.serverside.MainServerAPP;
 import ru.geekbrains.module2.lesson7.serverside.interfaces.AuthService;
 
 import java.io.IOException;
@@ -16,6 +19,8 @@ import java.util.concurrent.Executors;
 public class Server {
 
     private final int PORT = 8081;
+
+    public static final Logger logger = LogManager.getLogger(MainServerAPP.class.getName());
 
     private List<ClientHandler> clients;
 
@@ -35,22 +40,22 @@ public class Server {
             authService = new BaseAuthService();
             authService.start();
 
-            System.out.println("Server started");
+            logger.warn("Server started");
 
             clients = new ArrayList<>();
             executorService = Executors.newCachedThreadPool();
 
-            System.out.println("Awaiting client connection...");
+            logger.info("Awaiting client connection...");
 
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Client connected");
+                logger.info("Client connected");
                 new ClientHandler(this, socket);
             }
 
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
         } finally {
             if (authService != null)
                 authService.stop();

@@ -27,7 +27,7 @@ public class BaseAuthService implements AuthService {
             preparedStatement.executeUpdate();
             return true;
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
             return false;
         }
     }
@@ -37,9 +37,9 @@ public class BaseAuthService implements AuthService {
         try {
             statement = Singleton.getConnection().createStatement();
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
         }
-        System.out.println("AuthService started");
+        Server.logger.info("AuthService started");
     }
 
     @Override
@@ -48,9 +48,9 @@ public class BaseAuthService implements AuthService {
             if (statement != null)
                 statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
         }
-        System.out.println("AuthService stopped");
+        Server.logger.warn("AuthService stopped");
     }
 
     // Получение ника по логину и паролю
@@ -67,7 +67,7 @@ public class BaseAuthService implements AuthService {
                 return set.getString(1);
             }
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
         }
         return null;
     }
@@ -80,7 +80,7 @@ public class BaseAuthService implements AuthService {
             preparedStatement.setString(2, oldNick);
             preparedStatement.executeUpdate();
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
         }
     }
 
@@ -95,7 +95,7 @@ public class BaseAuthService implements AuthService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
         }
         return false;
     }
@@ -111,7 +111,7 @@ public class BaseAuthService implements AuthService {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.logger.error(e);
         }
         return false;
     }
