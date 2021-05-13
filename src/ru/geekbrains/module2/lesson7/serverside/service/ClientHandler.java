@@ -35,7 +35,8 @@ public class ClientHandler {
             dos = new DataOutputStream(socket.getOutputStream());
             nickname = "Noname";
 
-            new Thread(() -> {
+            // Запуск процесса аутентификации и последующее чтение сообщений
+            server.executorService.execute(() -> {
                 try {
                     authentication();
                     readMessage();
@@ -43,10 +44,10 @@ public class ClientHandler {
                 } finally {
                     closeConnection();
                 }
-            }).start();
+            });
 
             // Поток отключения клиента по таймеру
-            new Thread(() -> {
+            server.executorService.execute(() -> {
                 while (true) {
                     try {
                         Thread.sleep(maxTimeout - (System.currentTimeMillis() - timeout));
@@ -59,8 +60,7 @@ public class ClientHandler {
                         closeConnection();
                     }
                 }
-            }).start();
-
+            });
         } catch (IOException ignored) {
             closeConnection();
             throw new RuntimeException("Problems with ClientHandler");
