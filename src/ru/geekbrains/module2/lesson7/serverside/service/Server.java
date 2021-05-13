@@ -7,8 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Класс серверной части чата, для отправки пользователями друг-другу сообщений
@@ -18,8 +16,6 @@ public class Server {
     private final int PORT = 8081;
 
     private List<ClientHandler> clients;
-
-    public ExecutorService executorService;
 
     private AuthService authService;
 
@@ -38,7 +34,6 @@ public class Server {
             System.out.println("Server started");
 
             clients = new ArrayList<>();
-            executorService = Executors.newCachedThreadPool();
 
             System.out.println("Awaiting client connection...");
 
@@ -54,8 +49,6 @@ public class Server {
         } finally {
             if (authService != null)
                 authService.stop();
-            if (executorService != null)
-                executorService.shutdownNow();
         }
     }
 
