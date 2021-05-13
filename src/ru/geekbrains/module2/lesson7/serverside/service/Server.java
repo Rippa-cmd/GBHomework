@@ -78,11 +78,8 @@ public class Server {
                 list.append(client.getNickname()).append(", ");
         }
         int length = list.length();
-        if (length > 0) {
-            list.deleteCharAt(length - 1).deleteCharAt(length - 2);
-            from.sendMessage("\tList of online users: " + list.toString());
-        } else
-            from.sendMessage("\tYou are only one");
+        list.deleteCharAt(length - 1).deleteCharAt(length - 2);
+        from.sendMessage("List of online users: " + list.toString());
     }
 
     // Подписка пользователя
